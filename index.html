@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock paper scissors</title>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: rgb(4, 24, 56);
+        font-family: "Roboto Condensed", sans-serif;
+        color: white;
+      }
+
+      .header {
+        background-color: white;
+        padding: 20px;
+      }
+
+      .header > h1 {
+        color: black;
+        text-align: center;
+        font-family: "Roboto Condensed", sans-serif;
+      }
+
+      .score-board {
+        margin: 20px auto;
+        border: 3px solid white;
+        width: 200px;
+        height: 100px;
+        text-align: center;
+        border-radius: 20px;
+        padding: 15px 20px;
+        font-size: 1.5em;
+        position: relative;
+      }
+
+      .score-board > span {
+        font-size: 2em;
+      }
+
+      .score-label {
+        background-color: red;
+        font-size: 20px;
+        font-family: "Roboto Condensed", sans-serif;
+        padding: 10px 10px;
+        max-height: 75px;
+        max-width: 75px;
+      }
+
+      #user-label {
+        position: absolute;
+        top: 25px;
+        left: -30px;
+      }
+
+      #comp-label {
+        position: absolute;
+        top: 25px;
+        right: -30px;
+      }
+
+      .result > p {
+        font-size: 1.5em;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      .choices {
+        text-align: center;
+        margin-top: 40px;
+      }
+
+      .choice {
+        display: inline-block;
+        border: 4px solid white;
+        border-radius: 50%;
+        padding: 8px;
+        margin-left: 10px;
+        margin-bottom: 20px;
+        transition: cursor, background-color 500ms ease;
+      }
+
+      .choice:hover {
+        cursor: pointer;
+        background-color: rgb(179, 29, 181);
+      }
+
+      #action-msg {
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.5em;
+      }
+
+      #front-end {
+        text-align: center;
+      }
+
+      .final-user-win-choice,
+      .final-bot-lose-choice,
+      .final-user-lose-choice,
+      .final-bot-win-choice,
+      .final-tie {
+        border: 4px solid white;
+        border-radius: 50%;
+        margin-top: 10px;
+        padding: 8px;
+        margin-left: 10px;
+        margin-bottom: 10px;
+      }
+
+      .final-user-win-choice,
+      .final-bot-win-choice {
+        background-color: green;
+      }
+
+      .final-user-lose-choice,
+      .final-bot-lose-choice {
+        background-color: red;
+      }
+
+      .final-tie {
+        background-color: yellow;
+      }
+
+    </style>
+    <script>
+        var msgg = "";
+
+            function rock() {
+                msgg = msgg + "rock";
+            }
+
+            function scissors() {
+                msgg = msgg + "scissors";
+            }
+
+            function paper() {
+                msgg = msgg + "paper";
+            }
+
+            function randomNumForBotChoice() {
+                let rand = Math.random();
+                let new_rand = rand * 3;
+                let final_rand = Math.floor(new_rand);
+                return final_rand;
+            }
+
+            function rpsChoice(number) {
+                return ["scissors", "rock", "paper"][number];
+            }
+
+            function decideWinner(choice1, choice2) {
+                if (choice1 === choice2) {
+                    return "You tied";
+                }
+                else if (choice1 !== choice2) {
+                    if ((choice1 === "rock" && choice2 === "scissors") || (choice1 === "paper" && choice2 === "rock") || (choice1 === "scissors" && choice2 === "paper")) {
+                        return "You win";
+                    }
+                    else {
+                        return "You lose";
+                    }
+                }
+            }
+
+            function decideScore(msg) {
+                if (msg === "You tied") {
+                    { };
+                }
+                else if (msg === "You win") {
+                    let val = document.getElementById("user-score").innerText;
+                    val = parseInt(val);
+                    let newVal = val + 1;
+                    document.getElementById("user-score").innerText = newVal;
+                }
+                else if (msg === "You lose") {
+                    let val = document.getElementById("comp-score").innerText;
+                    val = parseInt(val);
+                    let newVal = val + 1;
+                    document.getElementById("comp-score").innerText = newVal;
+                }
+            }
+
+            function rpsFrontEnd(userChoiceImage, botChoiceImage, finalMessage) {
+                let imageDatabase = {
+                    "rock": document.getElementsByClassName("rock")[0].src,
+                    "paper": document.getElementsByClassName("paper")[0].src,
+                    "scissors": document.getElementsByClassName("scissors")[0].src
+                }
+
+                let frontEnd = document.createElement("div");
+                frontEnd.id = "front-end";
+                document.getElementById("body").appendChild(frontEnd);
+
+                let userImg = document.createElement("img");
+                userImg.src = `${imageDatabase[userChoiceImage]}`;
+
+
+                let msg = document.createElement("h3");
+                msg.className = "final-msg";
+                msg.innerText = finalMessage;
+
+                let botImg = document.createElement("img");
+                botImg.src = `${imageDatabase[botChoiceImage]}`;
+
+                if (finalMessage === "You win") {
+                    userImg.className = "final-user-win-choice";
+                    botImg.className = "final-bot-lose-choice";
+                }
+                else if (finalMessage === "You lose") {
+                    userImg.className = "final-user-lose-choice";
+                    botImg.className = "final-bot-win-choice";
+                }
+                else {
+                    userImg.className = "final-tie";
+                    botImg.className = "final-tie";
+                }
+
+                document.getElementById("front-end").appendChild(userImg);
+                document.getElementById("front-end").appendChild(msg);
+                document.getElementById("front-end").appendChild(botImg);
+            }
+
+            function rps() {
+                let userChoice, botChoice;
+
+                let botChoice_num = randomNumForBotChoice();
+                botChoice = rpsChoice(botChoice_num);
+
+                userChoice = msgg;
+                msgg = "";
+                let winMsg = decideWinner(userChoice, botChoice);
+                decideScore(winMsg);
+
+                rpsFrontEnd(userChoice, botChoice, winMsg);
+            }
+
+            function main1() {
+                document.getElementById("front-end").remove();
+                scissors();
+                rps();
+            }
+
+            function main2() {
+                document.getElementById("front-end").remove();
+                rock();
+                rps();
+            }
+
+            function main3() {
+                document.getElementById("front-end").remove();
+                paper();
+                rps();
+            }
+
+    </script>
+</head>
+<body id="body">
+    <div class="header">
+        <h1>Rock paper scissors</h1>
+    </div>
+    <div class="score-board">
+        <div id="user-label" class="score-label">User</div>
+        <div id="comp-label" class="score-label">Comp</div>
+        <span class="user-score" id="user-score">0</span>:<span class="comp-score" id="comp-score">0</span>
+    </div>
+    <div class="result">
+        <p>Choices:</p>
+        <div id="choices" class="choices">
+            <div id="scissors" class="choice">
+                <img src="https://img.icons8.com/color/48/000000/hand-scissors--v1.png" onclick="main1() " class="scissors">
+            </div>
+            <div id="rock" class="choice">
+                <img src="https://img.icons8.com/color/48/000000/hand-rock.png" onclick="main2()" class="rock">
+            </div>
+            <div id="paper" class="choice">
+                <img src="https://img.icons8.com/color/48/000000/hand.png"  onclick="main3()" class="paper">
+            </div>
+        </div>
+    </div>
+    <p id="action-msg">Make your move</p>
+    <div id="front-end"></div>
+</body>
+</html>
